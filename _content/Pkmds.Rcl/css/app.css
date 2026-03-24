@@ -1,0 +1,476 @@
+body, html {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom, 16px) env(safe-area-inset-left, 8px);
+    box-sizing: border-box;
+}
+
+.menu-container {
+    padding-bottom: env(safe-area-inset-bottom, 16px); /* Fallback to 16px */
+    padding-left: env(safe-area-inset-left, 8px); /* Fallback to 8px */
+    box-sizing: border-box;
+}
+
+.pkm-sprite {
+
+}
+
+.pkm-sprite-hires {
+    position: absolute;
+    width: 80%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: auto;
+    object-fit: contain;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.pkm-sprite-hires--loaded {
+    animation: sprite-fade-in 0.15s ease forwards;
+}
+
+.pkm-sprite-hires--sm {
+    width: 50%;
+}
+
+.pkm-sprite-hires--lg {
+    width: 100%;
+}
+
+@keyframes sprite-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.shiny-indicator-icon {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    z-index: 10;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.alpha-indicator-icon {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    z-index: 10;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.party-slot-indicator-icon {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+    z-index: 10;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.legality-indicator-icon {
+    position: absolute;
+    top: 20px;
+    right: 2px;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    z-index: 10;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.egg-indicator-icon {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 32px;
+    height: 32px;
+    pointer-events: none;
+    z-index: 10;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.held-item-icon {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.item-sprite {
+    object-fit: contain;
+    align-self: center;
+}
+
+.bag-data-grid .mud-table-container {
+    max-height: calc(100vh - 380px);
+    max-height: calc(100dvh - 380px);
+    overflow-y: auto;
+}
+
+/* Virtualizer-safe alternating row stripe — driven by RowClassFunc on logical data
+   index so the colour is stable during virtual scroll (nth-child is DOM-position-based
+   and gets out of sync as rows are recycled). */
+.mud-table-row.row-alt .mud-table-cell {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.mud-dark .mud-table-row.row-alt .mud-table-cell {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Desktop (lg breakpoint): side-by-side layout with independently scrolling edit form */
+@media (min-width: 1280px) {
+    html, body {
+        overflow: hidden;
+    }
+
+    /* Cascade flex heights from MudMainContent down to the party/box grid.
+       height:100vh + box-sizing:border-box means the AppBar padding-top is absorbed
+       into the explicit height, giving all flex:1 / height:100% descendants a
+       definite size to resolve against (so inner overflow-y:auto produces a scrollbar). */
+    .mud-main-content {
+        height: 100vh;
+        height: 100dvh;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .mud-main-content > .mud-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-height: 0;
+    }
+
+    /* Outer save-file tabs fill remaining vertical space */
+    .save-file-outer-tabs {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .save-file-outer-tabs > .mud-tabs-panels {
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    /* Each outer tab panel fills its available height; overflow managed by inner content */
+    .save-file-outer-tabs > .mud-tabs-panels > .mud-tab-panel {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    /* Party/Box tab content: overflow managed internally */
+    .party-box-tab-content {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    /* Pokédex tab content: inner MudDataGrid owns its scroll (FixedHeader + Virtualize),
+       so the outer container must not add a second scrollbar. */
+    .pokedex-tab-content {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    /* Search / EncounterDB filter column: independently scrollable so all expansion
+       panels are reachable regardless of how many are open. */
+    .search-filter-panel {
+        overflow-y: auto;
+        max-height: calc(100dvh - 120px);
+    }
+
+    /* Mystery Gifts grid: increase offset to ensure the container fits within the
+       tab panel's overflow:hidden boundary and buttons are never clipped. */
+    .mystery-gift-grid {
+        max-height: calc(100dvh - 380px);
+    }
+
+    .party-box-grid.mud-grid {
+        height: 100%;
+        overflow: hidden;
+        flex-wrap: nowrap;
+    }
+
+    .edit-form-column {
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .edit-form-column > .mud-paper {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .edit-form-outer {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .edit-form-outer > .flex {
+        flex-shrink: 0;
+    }
+
+    .edit-form-tabs-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-height: 0;
+    }
+
+    .edit-form-tabs {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .edit-form-tabs .mud-tabs-panels {
+        flex: 1;
+        overflow-y: auto;
+        min-height: 0;
+        margin-bottom: 8px;
+    }
+}
+
+/* Tablet (md–lg): natural-scroll layout, edit form tab panels scroll internally */
+@media (min-width: 768px) and (max-width: 1279px) {
+    .mud-main-content {
+        overflow-y: auto;
+    }
+
+    .edit-form-tabs .mud-tabs-panels {
+        overflow-y: auto;
+    }
+}
+
+.square-slot {
+    aspect-ratio: 1 / 1;
+}
+
+.slot-selected {
+    background-color: orange;
+}
+
+.square-slot:hover .pkm-sprite {
+    transform-origin: center;
+    animation: bounce 500ms linear infinite;
+}
+
+.current-tera-type-image {
+    align-self: center;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.plus-nature label,
+.plus-nature .mud-input-slot {
+    color: #dc2626 !important;
+    font-weight: 700;
+}
+
+.minus-nature label,
+.minus-nature .mud-input-slot {
+    color: #2563eb !important;
+    font-weight: 700;
+}
+
+.stat-maxed label,
+.stat-maxed .mud-input-slot {
+    font-weight: 700 !important;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.form-field {
+    margin-bottom: 0.5rem;
+}
+
+.loading-progress {
+    position: relative;
+    display: block;
+    width: 8rem;
+    height: 8rem;
+    margin: 20vh auto 1rem auto;
+}
+
+.loading-progress circle {
+    fill: none;
+    stroke: #e0e0e0;
+    stroke-width: 0.6rem;
+    transform-origin: 50% 50%;
+    transform: rotate(-90deg);
+}
+
+.loading-progress circle:last-child {
+    stroke: #1b6ec2;
+    stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+    transition: stroke-dasharray 0.05s ease-in-out;
+}
+
+.loading-progress-text {
+    position: absolute;
+    text-align: center;
+    font-weight: bold;
+    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+}
+
+.loading-progress-text:after {
+    content: var(--blazor-load-percentage-text, "Loading");
+}
+
+/* System preference — no-JS path, always applied */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #27272f;
+    }
+
+    .loading-progress circle {
+        stroke: #424242;
+    }
+
+    .loading-progress circle:last-child {
+        stroke: #90caf9;
+    }
+
+    .loading-progress-text {
+        color: #ffffff;
+    }
+}
+
+/* Explicit dark override (set by inline script / Blazor JS interop) */
+[data-theme="dark"] body {
+    background-color: #27272f;
+}
+
+[data-theme="dark"] .loading-progress circle {
+    stroke: #424242;
+}
+
+[data-theme="dark"] .loading-progress circle:last-child {
+    stroke: #90caf9;
+}
+
+[data-theme="dark"] .loading-progress-text {
+    color: #ffffff;
+}
+
+/* Explicit light override (beats system dark preference when user chose light) */
+[data-theme="light"] body {
+    background-color: #ffffff;
+}
+
+[data-theme="light"] .loading-progress circle {
+    stroke: #e0e0e0;
+}
+
+[data-theme="light"] .loading-progress circle:last-child {
+    stroke: #1b6ec2;
+}
+
+[data-theme="light"] .loading-progress-text {
+    color: inherit;
+}
+
+/* Drag and drop styles */
+.slot-dragging {
+    opacity: 0.5;
+    cursor: grabbing !important;
+}
+
+.slot-drop-target {
+    outline: 2px dashed #1976d2;
+    outline-offset: -2px;
+}
+
+.slot-file-drop {
+    outline: 3px solid #4caf50;
+    outline-offset: -3px;
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+.square-slot[draggable="true"] {
+    cursor: grab !important;
+}
+
+.square-slot[draggable="true"]:active {
+    cursor: grabbing !important;
+}
+
+.update-badge {
+    width: 14px;
+    height: 14px;
+    animation: update-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes update-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(33, 150, 243, 0);
+    }
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
